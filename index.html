@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>XSS Example</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <script
+            src="https://code.jquery.com/jquery-1.12.4.js"
+            integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+            crossorigin="anonymous"></script>
+        
+        <h2>XSS Example</h2>
+
+        <label for="evil">Evil</label><br>
+        <div id="evil"></div><br>
+        <label for="saint">Saint</label><br>
+        <input type="input" id="saint"><br>
+        s1: <div id="saint1"></div>
+        s2: <div id="saint2"></div>
+
+        
+        <h2><a href="https://www.w3schools.com/html/html_entities.asp">HTML Entities</a></h2>
+
+        <script></script>
+        &lt;script&gt;&lt;/script&gt;
+
+        <script>
+            $.ajax({
+                url: 'evil_json.txt',
+                dataType: 'json',
+                cache: false,
+                success: function( data, status )
+                {
+                    // Dangerous
+                    $('<div/>' + data.name + '</div>').appendTo('#evil');
+                    $('#evil').html(data.name);
+
+                    // Safe
+                    $('#saint').val(data.name);
+                    $('#saint1').text(data.name);
+                    
+                    var html = '';
+                    html += '<div>';
+                    html += $('<div/>', { 'class': "header" }).text(data.name).prop('outerHTML');
+                    html += '</div>';
+                    $(html).appendTo('#saint2');
+                },
+                error: function(xhr, textStatus, err) { //odstampaj textStatus, err jbt
+                    alert(textStatus);
+                    alert(err);
+                    alert("readyState: " + xhr.readyState + "\n xhrStatus: " + xhr.status);
+                    alert("responseText: " + xhr.responseText);
+                }
+            });
+        </script>
+    </body>
+</html>
